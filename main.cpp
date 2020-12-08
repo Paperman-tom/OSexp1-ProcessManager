@@ -217,7 +217,6 @@ int main()
 				cout << "\b" << endl;
 				cout << "User(1):";
 				auto r1 = os.ready_list[1].begin();
-				r1++;
 				while (r1 != os.ready_list[1].end())
 				{
 					if (*r1 == "")
@@ -232,7 +231,6 @@ int main()
 				cout << "\b" << endl;
 				cout << "Init(0):";
 				auto r0 = os.ready_list[0].begin();
-				r0++;
 				while (r0 != os.ready_list[0].end())
 				{
 					if (*r0 == "")
