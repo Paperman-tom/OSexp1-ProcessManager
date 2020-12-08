@@ -21,9 +21,9 @@ public:
 	Dispatcher &out_block_list(Process::PriorityType priority);
 
 	Dispatcher &change_running_to_list(string PID, Process::PriorityType priority, bool toReadyList);
-	//µ÷¶È¶ÔÓ¦ÓÅÏÈ¼¶ready¶ÓÁĞµÄµÚÒ»¸ö½ø³Ì½øÈërunning
+	//è°ƒåº¦å¯¹åº”ä¼˜å…ˆçº§readyé˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªè¿›ç¨‹è¿›å…¥running
 	Dispatcher &change_ready_to_running(Process::PriorityType priority);
-	//µ÷¶ÈÍ£Ö¹µ±Ç°runningµÄ½ø³Ì
+	//è°ƒåº¦åœæ­¢å½“å‰runningçš„è¿›ç¨‹
 	Dispatcher &default_running_value(Process::PriorityType prirority);
 
 	string get_running_process();

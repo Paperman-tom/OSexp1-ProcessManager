@@ -26,12 +26,12 @@ Process::Process(string name, string PID, Status status, PriorityType priority, 
 }
 Process &Process::add_children_process(string name, string PID, Status status, PriorityType priority)
 {
-	Process child(name, PID, status, priority, this->PID); //´´½¨×Ó½ø³Ì
+	Process child(name, PID, status, priority, this->PID); //åˆ›å»ºå­è¿›ç¨‹
 	if (child.status.process_type != Process::ready)
-	{ //ÉèÖÃ½ø³Ì×´Ì¬Îªready
+	{ //è®¾ç½®è¿›ç¨‹çŠ¶æ€ä¸ºready
 		child.set_process_status(ready);
 	}
-	children.insert(make_pair(child.PID, child)); //ÉèÖÃ½ø³ÌIDmap
+	children.insert(make_pair(child.PID, child)); //è®¾ç½®è¿›ç¨‹IDmap
 
 	return (*children.find(PID)).second;
 }
@@ -45,14 +45,12 @@ void Process::get_resource(string RID, int resource_num)
 {
 	auto resource = other_resource.find(RID);
 	if (resource != other_resource.end())
-	{ //ÒÑÔÚ×ÊÔ´ÁĞ±í¼´Ôö¼ÓÆäÊıÁ¿
+	{ //å·²åœ¨èµ„æºåˆ—è¡¨å³å¢åŠ å…¶æ•°é‡
 		(*resource).second = (*resource).second + resource_num;
 	}
 	else
-	{ //Î´ÔÚ×ÊÔ´ÁĞ±í¼´²åÈë
+	{ //æœªåœ¨èµ„æºåˆ—è¡¨å³æ’å…¥
 		other_resource.insert(make_pair(RID, resource_num));
-		cout << "add new resources" << endl
-			 << "size:" << other_resource.size() << endl;
 	}
 }
 
@@ -61,16 +59,14 @@ int Process::relase_resource(string RID)
 	auto resource = other_resource.find(RID);
 	if (resource != other_resource.end())
 	{
-		//ÊÍ·Å¶ÔÓ¦×ÊÔ´
+		//é‡Šæ”¾å¯¹åº”èµ„æº
 		int resource_num = resource->second;
 		other_resource.erase(RID);
-		cout << "relase resource" << endl
-			 << "size:" << other_resource.size();
 		return resource_num;
 	}
 	else
 	{
-		//Ã»ÓĞÕÒµ½¶ÔÓ¦×ÊÔ´
+		//æ²¡æœ‰æ‰¾åˆ°å¯¹åº”èµ„æº
 		return 0;
 	}
 }
@@ -182,7 +178,7 @@ void Process::set_list_status(ListType list_type)
 
 void Process::relase_all_resource(ResourceController resource_controller, string *set_ready_process)
 {
-	//µİ¹éÊÍ·ÅËùÓĞ×Ó½ø³Ì×ÊÔ´
+	//é€’å½’é‡Šæ”¾æ‰€æœ‰å­è¿›ç¨‹èµ„æº
 	string *temp;
 	auto children_map_it = children.begin();
 	while (children_map_it != children.end())
@@ -191,12 +187,13 @@ void Process::relase_all_resource(ResourceController resource_controller, string
 		child.relase_all_resource(resource_controller, temp);
 		++children_map_it;
 	}
-	//ÊÍ·Å½ø³Ì×ÊÔ´
+	//é‡Šæ”¾è¿›ç¨‹èµ„æº
 	auto resource_map_it = other_resource.cbegin();
 	//string set_ready_process[4];
 	for (int i = 0; resource_map_it != other_resource.cend(); ++i, ++resource_map_it)
 	{
 		Resource &r = resource_controller.get_resource(resource_map_it->first);
 		set_ready_process[i] = r.release(resource_map_it->second);
+		cout<< "Relase "<<r.get_name()<<" , ";
 	}
 }

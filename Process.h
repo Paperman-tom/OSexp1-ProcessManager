@@ -35,19 +35,19 @@ public:
 	void set_process_status(ProcessType process_type);
 	void set_list_status(ListType list_type);
 
-	Process &add_children_process(string name, string PID, Status status, PriorityType priority); //Ìí¼Ó×Ó½ø³Ì
-	void set_parent_process(string PID);														  //ÉèÖÃ¸¸½ø³Ì
+	Process &add_children_process(string name, string PID, Status status, PriorityType priority); //æ·»åŠ å­è¿›ç¨‹
+	void set_parent_process(string PID);														  //è®¾ç½®çˆ¶è¿›ç¨‹
 
-	void get_resource(string RID, int resource_num); //»ñÈ¡×ÊÔ´
-	int relase_resource(string RID);				 //ÊÍ·Å×ÊÔ´
-	//string* relase_all_resource(ResourceController resource_controller);//ÊÍ·Å×ÊÔ´
-	void relase_all_resource(ResourceController resource_controller, string *set_ready_process); //ÊÍ·Å×ÊÔ´
+	void get_resource(string RID, int resource_num); //è·å–èµ„æº
+	int relase_resource(string RID);				 //é‡Šæ”¾èµ„æº
+	//string* relase_all_resource(ResourceController resource_controller);//é‡Šæ”¾èµ„æº
+	void relase_all_resource(ResourceController resource_controller, string *set_ready_process); //é‡Šæ”¾èµ„æº
 	void change_status(ProcessOperate operater);
 
 	map<string, Process> &get_children();
 
 private:
-	string PID; //½ø³ÌPID
+	string PID; //è¿›ç¨‹PID
 	string name;
 
 	//Not used part
@@ -56,9 +56,9 @@ private:
 	string open_files = "";
 	//Not used part END
 
-	map<string, int> other_resource; //×ÊÔ´ÁĞ±í
-	Status status;					 //½ø³Ì×´Ì¬
-	PriorityType priority;			 //½ø³ÌÓÅÏÈ¼¶
-	string parent_process;			 //¸¸½ø³ÌPID
-	map<string, Process> children;	 //×Ó½ø³ÌÁĞ±í
+	map<string, int> other_resource; //èµ„æºåˆ—è¡¨
+	Status status;					 //è¿›ç¨‹çŠ¶æ€
+	PriorityType priority;			 //è¿›ç¨‹ä¼˜å…ˆçº§
+	string parent_process;			 //çˆ¶è¿›ç¨‹PID
+	map<string, Process> children;	 //å­è¿›ç¨‹åˆ—è¡¨
 };

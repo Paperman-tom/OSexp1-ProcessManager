@@ -22,42 +22,42 @@ static string trans_name_to_PID(string process_name, ProcessController pc)
 }
 int main()
 {
-	//×ÊÔ´³õÊ¼»¯
+	//èµ„æºåˆå§‹åŒ–
 	int resource_num = 4;
 	ResourceController rc = ResourceController(4);
 
-	//¶ÓÁĞ³õÊ¼»¯
+	//é˜Ÿåˆ—åˆå§‹åŒ–
 	Dispatcher os = Dispatcher();
 
-	//½ø³Ì¹ÜÀí³õÊ¼»¯
+	//è¿›ç¨‹ç®¡ç†åˆå§‹åŒ–
 	ProcessController pc = ProcessController();
 
-	//´´½¨Init ½ø³Ì
+	//åˆ›å»ºInit è¿›ç¨‹
 	const Process::Status default_status = {Process::ready, Process::ReadyL};
 	int process_counter = 1;
 
 	Process Init_1("Init_1", Tools::toString(process_counter), default_status, Process::Init, "");
-	//Ìí¼Ó½ø³Ìµ½½ø³Ì±í
+	//æ·»åŠ è¿›ç¨‹åˆ°è¿›ç¨‹è¡¨
 	pc.insert_process(Init_1.get_PID(), Init_1);
-	//Ìí¼Ó½ø³Ìµ½ready¶ÓÁĞ²¢¿ªÊ¼Ö´ĞĞ
+	//æ·»åŠ è¿›ç¨‹åˆ°readyé˜Ÿåˆ—å¹¶å¼€å§‹æ‰§è¡Œ
 	os.insert_ready_list(Init_1.get_PID(), Init_1.get_priority()).change_ready_to_running(Init_1.get_priority());
-	cout << "£ªProcess init is running " << endl;
-	//test shell Ñ­»·½ÓÊÜÃüÁî
+	cout << "*Process init is running " << endl;
+	//test shell å¾ªç¯æ¥å—å‘½ä»¤
 	while (true)
 	{
 		cout << "shell >";
 
-		//¼ì²âµ±Ç°½ø³Ì£¨ĞÂ½ø³ÌµÄ¸¸½ø³Ì£©
+		//æ£€æµ‹å½“å‰è¿›ç¨‹ï¼ˆæ–°è¿›ç¨‹çš„çˆ¶è¿›ç¨‹ï¼‰
 		string parent_process_id = os.get_running_process();
-		//»ñÈ¡£¨¸¸£©½ø³ÌµÄÒıÓÃ
+		//è·å–ï¼ˆçˆ¶ï¼‰è¿›ç¨‹çš„å¼•ç”¨
 		Process &parent_process = (*(pc.process_map.find(parent_process_id))).second;
 
-		//»ñÈ¡ÃüÁî
+		//è·å–å‘½ä»¤
 		string command;
 		cin >> command;
 
 		if (command == "cr")
-		{ //´´½¨ĞÂ½ø³Ì
+		{ //åˆ›å»ºæ–°è¿›ç¨‹
 			string process_name;
 			int process_priority_val;
 			cin >> process_name >> process_priority_val;
@@ -79,14 +79,14 @@ int main()
 			}
 			process_counter++;
 
-			//¸ù¾İ¸¸½ø³Ì´´½¨×Ó½ø³Ì£¬»ñÈ¡×Ó½ø³ÌµÄÒıÓÃ
+			//æ ¹æ®çˆ¶è¿›ç¨‹åˆ›å»ºå­è¿›ç¨‹ï¼Œè·å–å­è¿›ç¨‹çš„å¼•ç”¨
 			Process &child_process = parent_process.add_children_process(process_name,
 																		 Tools::toString(process_counter),
 																		 default_status,
 																		 process_priority);
-			//Ìí¼Ó×Ó½ø³Ìµ½½ø³Ì±í
+			//æ·»åŠ å­è¿›ç¨‹åˆ°è¿›ç¨‹è¡¨
 			pc.insert_process(child_process.get_PID(), child_process);
-			//Ìí¼Ó×Ó½ø³Ìµ½ready¶ÓÁĞ
+			//æ·»åŠ å­è¿›ç¨‹åˆ°readyé˜Ÿåˆ—
 			os.insert_ready_list(child_process.get_PID(), child_process.get_priority());
 
 			//cout<< "new process name:" << child_process.get_name()
@@ -98,6 +98,16 @@ int main()
 			if (parent_process.get_priority() < child_process.get_priority())
 			{
 				pc.timeout(os);
+				// string running_process_id = os.get_running_process();
+				// Process &running_process = (*(pc.process_map.find(running_process_id))).second;
+				// cout << "Process " << running_process.get_name() << " is running. ";
+				// cout << "Process " << parent_process.get_name() << " is ready" << endl;
+			}
+			else
+			{
+				string running_process_id = os.get_running_process();
+				Process &running_process = (*(pc.process_map.find(running_process_id))).second;
+				cout << "Process " << running_process.get_name() << " is running. " << endl;
 			}
 		}
 		else if (command == "to")
@@ -105,69 +115,72 @@ int main()
 			pc.timeout(os);
 		}
 		else if (command == "req")
-		{ //µ±Ç°½ø³ÌÇëÇó×ÊÔ´
+		{ //å½“å‰è¿›ç¨‹è¯·æ±‚èµ„æº
 			string resource_name;
 			int req_resource_num;
 			cin >> resource_name >> req_resource_num;
 			string RID = Tools::trans_name_to_RID(resource_name);
 			Resource &resource = rc.get_resource(RID);
 
-			//ÇëÇó×ÊÔ´
+			//è¯·æ±‚èµ„æº
 			int get_resource = resource.request(parent_process.get_PID(), req_resource_num);
 			if (get_resource == 0)
-			{ //»ñµÃ×ÊÔ´£¬ÔÚ½ø³ÌPCBÖĞ¼ÇÂ¼
-				//cout << "get res " << RID << ":" << req_resource_num << endl;
+			{ //è·å¾—èµ„æºï¼Œåœ¨è¿›ç¨‹PCBä¸­è®°å½•
+				cout << "Process " << parent_process.get_name() << " requests " << req_resource_num << " " << resource_name << endl;
 				parent_process.get_resource(RID, req_resource_num);
 			}
 			else if (get_resource == 1)
-			{ //Î´»ñµÃ×ÊÔ´£¬ÔÚ½ø³Ì×èÈû
+			{ //æœªè·å¾—èµ„æºï¼Œåœ¨è¿›ç¨‹é˜»å¡
 				parent_process.change_status(Process::request);
-				//½øÈë×èÈû¶ÓÁĞ
+				//è¿›å…¥é˜»å¡é˜Ÿåˆ—
 				os.change_running_to_list(parent_process.get_PID(), parent_process.get_priority(), false);
-				//µ÷¶ÈÏÂÒ»¸öready½ø³Ì½øÈërunning
+				//è°ƒåº¦ä¸‹ä¸€ä¸ªreadyè¿›ç¨‹è¿›å…¥running
 				pc.scheduler(os);
+				cout << "Process " << parent_process.get_name() << " is blocked" << endl;
 			}
 			else
-			{ //»ñÈ¡×ÊÔ´³ö´í
+			{ //è·å–èµ„æºå‡ºé”™
 				cout << "Error in get resource!" << endl;
 			}
 		}
 		else if (command == "rel")
-		{ //µ±Ç°½ø³ÌÊÍ·Å×ÊÔ´
+		{ //å½“å‰è¿›ç¨‹é‡Šæ”¾èµ„æº
 			string resource_name;
 			int req_resource_num;
 			cin >> resource_name >> req_resource_num;
 			string RID = Tools::trans_name_to_RID(resource_name);
 			Resource &resource = rc.get_resource(RID);
-			//ÊÍ·Å×ÊÔ´²¢¼ì²âÏÂÒ»¸öÓ¦½øÈëready¶ÓÁĞµÄ½ø³Ì
+			//é‡Šæ”¾èµ„æºå¹¶æ£€æµ‹ä¸‹ä¸€ä¸ªåº”è¿›å…¥readyé˜Ÿåˆ—çš„è¿›ç¨‹
 			string next_process_id = resource.release(parent_process.relase_resource(RID));
+			cout << "Process " << parent_process.get_name() << " releases " << req_resource_num << " " << resource_name << endl;
 			if (next_process_id != "")
-			{ //¿ÉÂú×ãÏÂÒ»½ø³Ì
+			{ //å¯æ»¡è¶³ä¸‹ä¸€è¿›ç¨‹
 				Process &set_ready_process = (*(pc.process_map.find(next_process_id))).second;
-				//½ø³Ì´Óblock¶ÓÁĞ½øÈëready¶ÓÁĞ
+				//è¿›ç¨‹ä»blocké˜Ÿåˆ—è¿›å…¥readyé˜Ÿåˆ—
 				os.out_block_list(set_ready_process.get_priority()).insert_ready_list(set_ready_process.get_PID(), set_ready_process.get_priority());
 			}
 		}
 		else if (command == "de")
-		{ //É¾³ıµ±Ç°½ø³Ì¼°×Ó½ø³Ì
+		{ //åˆ é™¤å½“å‰è¿›ç¨‹åŠå­è¿›ç¨‹
 			string process_name;
 			cin >> process_name;
 			string process_id = Tools::trans_name_to_PID(process_name, pc);
 			Process &process = pc.get_process(process_id);
-			//ÊÍ·Å×ÊÔ´
+			//é‡Šæ”¾èµ„æº
 			string set_ready_process_list[4] = {"", "", "", ""};
 			process.relase_all_resource(rc, set_ready_process_list);
 			for (int i = 0; i < set_ready_process_list->size(); i++)
-			{ //±éÀú·µ»ØµÄ¿Éµ÷¶ÈÖÁreadyµÄ½ø³ÌÃûÁĞ±í
+			{ //éå†è¿”å›çš„å¯è°ƒåº¦è‡³readyçš„è¿›ç¨‹ååˆ—è¡¨
 				if (set_ready_process_list[i] != "")
 				{
 					Process &set_ready_process = (*(pc.process_map.find(set_ready_process_list[i]))).second;
-					//½ø³Ì´Óblock¶ÓÁĞ½øÈëready¶ÓÁĞ
+					//è¿›ç¨‹ä»blocké˜Ÿåˆ—è¿›å…¥readyé˜Ÿåˆ—
 					os.out_block_list(set_ready_process.get_priority()).insert_ready_list(set_ready_process.get_PID(), set_ready_process.get_priority());
 					set_ready_process.change_status(Process::release);
+					cout << "wake up process " << set_ready_process.get_name() << " ." << endl;
 				}
 			}
-			//´Ó½ø³Ì±íÉ¾³ı×Ó½ø³Ì
+			//ä»è¿›ç¨‹è¡¨åˆ é™¤å­è¿›ç¨‹
 			auto &children = process.get_children();
 			auto children_it = children.begin();
 			while (children_it != children.end())
@@ -175,7 +188,7 @@ int main()
 				pc.destroy_process(children_it->second.get_PID());
 				++children_it;
 			}
-			//´Ó½ø³Ì±íÉ¾³ı½ø³Ì
+			//ä»è¿›ç¨‹è¡¨åˆ é™¤è¿›ç¨‹
 			if (parent_process.get_PID() == process.get_PID())
 			{
 				pc.timeout(os);
@@ -184,19 +197,96 @@ int main()
 		}
 		else if (command == "list")
 		{
-			auto it = pc.process_map.begin();
-			while (it != pc.process_map.end())
+			string list_name;
+			cin >> list_name;
+			if (list_name == "ready")
 			{
-				cout << endl
-					 << it->second.get_name() << "::" << it->second.get_PID() << endl;
-				++it;
+				cout << "Sys(2):";
+				auto r2 = os.ready_list[2].begin();
+				while (r2 != os.ready_list[2].end())
+				{
+					if (*r2 == "")
+					{
+						++r2;
+						continue;
+					}
+					Process &nextP = (*(pc.process_map.find(*r2))).second;
+					cout << nextP.get_name() << "-";
+					++r2;
+				}
+				cout << "\b" << endl;
+				cout << "User(1):";
+				auto r1 = os.ready_list[1].begin();
+				r1++;
+				while (r1 != os.ready_list[1].end())
+				{
+					if (*r1 == "")
+					{
+						++r1;
+						continue;
+					}
+					Process &nextP = (*(pc.process_map.find(*r1))).second;
+					cout << nextP.get_name() << "-";
+					++r1;
+				}
+				cout << "\b" << endl;
+				cout << "Init(0):";
+				auto r0 = os.ready_list[0].begin();
+				r0++;
+				while (r0 != os.ready_list[0].end())
+				{
+					if (*r0 == "")
+					{
+						++r0;
+						continue;
+					}
+					Process &nextP = (*(pc.process_map.find(*r0))).second;
+					cout << nextP.get_name() << "-";
+					++r0;
+				}
+				cout << "\b" << endl;
+			}
+			else if (list_name == "res")
+			{
+				for (int i = 1; i <= 4; i++)
+				{
+					cout << "R" << i << " ";
+					Resource &res = rc.get_resource(to_string(i));
+					cout << res.get_free_unit_num() << endl;
+				}
+			}
+			else if (list_name == "block")
+			{
+				for (int i = 1; i <= 4; i++)
+				{
+					cout << "R" << i << " ";
+					Resource &res = rc.get_resource(to_string(i));
+					auto res_waiting_list = res.get_waiting_list();
+					auto p_waiting = res_waiting_list.begin();
+					while (p_waiting != res_waiting_list.end())
+					{
+						Process &nextP = (*(pc.process_map.find(p_waiting->PID))).second;
+						cout << " " << nextP.get_name() << "(" << p_waiting->req_resource_num << ")";
+						++p_waiting;
+					}
+					cout << endl;
+				}
+			}
+			else
+			{
+				auto it = pc.process_map.begin();
+				while (it != pc.process_map.end())
+				{
+					cout << endl
+						 << it->second.get_name() << "::" << it->second.get_PID() << endl;
+					++it;
+				}
 			}
 		}
 		else if (command == "exit")
 		{
 			break;
 		}
-		cout << parent_process.get_name() << endl;
 	}
 
 	cout << "END" << endl;

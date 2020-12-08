@@ -16,6 +16,19 @@ bool Resource::isFull()
 	return free_unit_num == 0;
 }
 
+string Resource::get_name(){
+	return "R"+RID;
+}
+
+int Resource::get_free_unit_num(){
+	return free_unit_num;
+}
+
+vector<Resource::ProcessInfo> Resource::get_waiting_list(){
+	return waiting_list;
+}
+
+
 Resource::Resource(string RID, int resource_num, int free_unit_num)
 	: RID(RID), resource_num(resource_num), free_unit_num(free_unit_num)
 {
@@ -24,19 +37,19 @@ Resource::Resource(string RID, int resource_num, int free_unit_num)
 int Resource::request(string PID, int req_resource_num)
 {
 	if (req_resource_num > resource_num)
-	{ //ÇëÇó×ÊÔ´Êı·Ç·¨
+	{ //è¯·æ±‚èµ„æºæ•°éæ³•
 		throw "Error! Requested resource exceeded upper limit! ";
 		return -1;
 	}
 	else
 	{
 		if (req_resource_num <= free_unit_num)
-		{ //·ÖÅä×ÊÔ´
+		{ //åˆ†é…èµ„æº
 			free_unit_num = free_unit_num - req_resource_num;
 			return 0;
 		}
 		else
-		{ //×ÊÔ´ÔİÊ±²»×ã£¬¼ÓÈëµÈ´ı¶ÓÁĞ
+		{ //èµ„æºæš‚æ—¶ä¸è¶³ï¼ŒåŠ å…¥ç­‰å¾…é˜Ÿåˆ—
 			waiting_list.push_back({PID, req_resource_num});
 			return 1;
 		}
@@ -48,11 +61,11 @@ string Resource::release(int release_resource_num)
 	free_unit_num = free_unit_num + release_resource_num;
 
 	if (!waiting_list.empty())
-	{ //µÈ´ıÁĞ±í·Ç¿Õ
+	{ //ç­‰å¾…åˆ—è¡¨éç©º
 		auto &next_process = *(waiting_list.begin());
 		if (next_process.req_resource_num <= free_unit_num)
 		{
-			//·ÖÅä×ÊÔ´
+			//åˆ†é…èµ„æº
 			string next_process_id = next_process.PID;
 			free_unit_num = free_unit_num - next_process.req_resource_num;
 			waiting_list.erase(waiting_list.begin());

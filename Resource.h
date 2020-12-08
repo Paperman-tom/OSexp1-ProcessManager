@@ -15,13 +15,16 @@ public:
 
 	int request(string PID, int req_resource_num);
 	string release(int release_resource_num);
-	bool isSingleResource(); //ÊÇ·ñÊÇµ¥Ò»×ÊÔ´
-	bool isFull();			 //ÊÇ·ñÓĞ¿ÕÓà×ÊÔ´
+	bool isSingleResource(); //æ˜¯å¦æ˜¯å•ä¸€èµ„æº
+	bool isFull();			 //æ˜¯å¦æœ‰ç©ºä½™èµ„æº
+	string get_name();
+	int get_free_unit_num();
+	vector<ProcessInfo> get_waiting_list();
 
 private:
-	string RID; //×ÊÔ´RID
+	string RID; //èµ„æºRID
 	int resource_num;
-	int free_unit_num; //¿ÕÏĞµ¥ÔªÊı
+	int free_unit_num; //ç©ºé—²å•å…ƒæ•°
 
-	vector<ProcessInfo> waiting_list; //×èÈû½ø³ÌÁĞ±í£¬Ìî³ä½ø³ÌµÄPID£»
+	vector<ProcessInfo> waiting_list; //é˜»å¡è¿›ç¨‹åˆ—è¡¨ï¼Œå¡«å……è¿›ç¨‹çš„PIDï¼›
 };

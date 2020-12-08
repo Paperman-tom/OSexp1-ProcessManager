@@ -3,7 +3,7 @@ Dispatcher::Dispatcher()
 {
 	for (int i = 0; i < size; i++)
 	{
-		ready_list[i].push_front(""); //ready_listµÄ³õÊ¼»¯runningÎ»
+		ready_list[i].push_front(""); //ready_listçš„åˆå§‹åŒ–runningä½
 	}
 }
 Dispatcher &Dispatcher::insert_ready_list(string PID, Process::PriorityType priority)
@@ -85,7 +85,7 @@ Dispatcher &Dispatcher::out_block_list(Process::PriorityType priority)
 	}
 	return *this;
 }
-//µ÷¶ÈÍ£Ö¹µ±Ç°runningµÄ½ø³Ì,³õÊ¼»¯runningÎ»
+//è°ƒåº¦åœæ­¢å½“å‰runningçš„è¿›ç¨‹,åˆå§‹åŒ–runningä½
 Dispatcher &Dispatcher::default_running_value(Process::PriorityType priority)
 {
 	switch (priority)
@@ -119,7 +119,7 @@ Dispatcher &Dispatcher::change_running_to_list(string PID, Process::PriorityType
 	}
 	return *this;
 }
-//µ÷¶È¶ÔÓ¦ÓÅÏÈ¼¶ready¶ÓÁÐµÄµÚÒ»¸ö½ø³Ì½øÈërunning
+//è°ƒåº¦å¯¹åº”ä¼˜å…ˆçº§readyé˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªè¿›ç¨‹è¿›å…¥running
 Dispatcher &Dispatcher::change_ready_to_running(Process::PriorityType priority)
 {
 

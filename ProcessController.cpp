@@ -1,5 +1,5 @@
 #include "ProcessController.h"
-
+#include <iostream>
 ProcessController::ProcessController()
 {
 }
@@ -53,6 +53,7 @@ void ProcessController::scheduler(Dispatcher &dispatcher)
 		//设置新running进程的状态为running
 		Process &new_running_process = process_map.find(dispatcher.get_running_process())->second;
 		new_running_process.set_process_status(Process::running);
+		cout << "Process " << new_running_process.get_name() << " is running. ";
 	}
 }
 
@@ -64,4 +65,5 @@ void ProcessController::timeout(Dispatcher &dispatcher)
 	dispatcher.change_running_to_list(running_process_id, running_process.get_priority(), true);
 	running_process.set_process_status(Process::ready);
 	scheduler(dispatcher);
+	cout << "Process " << running_process.get_name() << " is ready" << endl;
 }

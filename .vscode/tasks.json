@@ -30,6 +30,7 @@
             "label": "g++",
             "command": "g++",
             "args": [
+                "-g",
                 "*.cpp",
                 "-o",
                 "${fileBasenameNoExtension}.exe"
