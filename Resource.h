@@ -23,7 +23,7 @@ public:
 
 private:
 	string RID; //资源RID
-	int resource_num;
+	int resource_num;//资源总量
 	int free_unit_num; //空闲单元数
 
 	vector<ProcessInfo> waiting_list; //阻塞进程列表，填充进程的PID；

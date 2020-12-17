@@ -5,6 +5,7 @@
 #include "ProcessController.h"
 #include "Dispatcher.h"
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 static string trans_name_to_PID(string process_name, ProcessController pc)
@@ -123,23 +124,27 @@ int main()
 			Resource &resource = rc.get_resource(RID);
 
 			//请求资源
-			int get_resource = resource.request(parent_process.get_PID(), req_resource_num);
-			if (get_resource == 0)
-			{ //获得资源，在进程PCB中记录
-				cout << "Process " << parent_process.get_name() << " requests " << req_resource_num << " " << resource_name << endl;
-				parent_process.get_resource(RID, req_resource_num);
+			try
+			{
+				int get_resource = resource.request(parent_process.get_PID(), req_resource_num);
+				if (get_resource == 0)
+				{ //获得资源，在进程PCB中记录
+					cout << "Process " << parent_process.get_name() << " requests " << req_resource_num << " " << resource_name << endl;
+					parent_process.get_resource(RID, req_resource_num);
+				}
+				else if (get_resource == 1)
+				{ //未获得资源，在进程阻塞
+					parent_process.change_status(Process::request);
+					//进入阻塞队列
+					os.change_running_to_list(parent_process.get_PID(), parent_process.get_priority(), false);
+					//调度下一个ready进程进入running
+					pc.scheduler(os);
+					cout << "Process " << parent_process.get_name() << " is blocked" << endl;
+				}
 			}
-			else if (get_resource == 1)
-			{ //未获得资源，在进程阻塞
-				parent_process.change_status(Process::request);
-				//进入阻塞队列
-				os.change_running_to_list(parent_process.get_PID(), parent_process.get_priority(), false);
-				//调度下一个ready进程进入running
-				pc.scheduler(os);
-				cout << "Process " << parent_process.get_name() << " is blocked" << endl;
-			}
-			else
-			{ //获取资源出错
+			catch (const char* msg)
+			{
+				std::cerr << msg << '\n';
 				cout << "Error in get resource!" << endl;
 			}
 		}
@@ -272,11 +277,13 @@ int main()
 			}
 			else
 			{
+				cout << "process name "
+					 << "||"
+					 << " pID" << endl;
 				auto it = pc.process_map.begin();
 				while (it != pc.process_map.end())
 				{
-					cout << endl
-						 << it->second.get_name() << "::" << it->second.get_PID() << endl;
+					cout << setw(12) << it->second.get_name() << " :: " << setw(2) << it->second.get_PID() << endl;
 					++it;
 				}
 			}
