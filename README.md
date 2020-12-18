@@ -31,3 +31,8 @@
 > `rel <resource_name> <requst_num>` 释放资源 资源名 释放数量
 > `exit` 退出shell
 
+### 相关方法
+> 1)	通过定义C++ enum枚举常量和struct结构实现进程状态定义
+> 2)	C++ map容器和vector容器实现不同的进程列表和资源列表
+> 3)	C++ list容器实现ready和block队列管理
+> 4)	使用基于优先级的抢占式调度策略，在同一优先级内使用时间片轮转（RR）
